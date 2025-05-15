@@ -1,0 +1,9 @@
+import pyautogui
+import time
+import random
+
+while True:
+    x = random.randint(-100, 100)
+    y = random.randint(-100, 100)
+    pyautogui.moveRel(x, y, duration=0.2)
+    time.sleep(0.5)
