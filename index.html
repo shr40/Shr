@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>صدى الصمت | Echo of Silence</title>
+    <style>
+        /* التنسيقات الأساسية - محسنة لجو سينمائي */
+        :root {
+            --deep-black: #020205;
+            --neon-cyan: #00fff5;
+            --blood-red: #8b0000;
+            --ghost-white: rgba(255, 255, 255, 0.8);
+        }
+
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Cairo', sans-serif; }
+
+        #game { width: 100vw; height: 100vh; position: relative; background: var(--deep-black); filter: contrast(1.1); }
+
+        /* ==================== النجم الجديد: الشخصية ==================== */
+        #characterArea {
+            position: absolute;
+            bottom: 20%; /* موقع الشخصية فوق منطقة النصوص */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            pointer-events: none;
+            /* إضافة ظل توهج خفيف للشخصية */
+            filter: drop-shadow(0 0 10px rgba(0, 255, 245, 0.5));
+        }
+
+        .character-sprite {
+            width: 64px;  /* عرض إطار واحد من الصورة */
+            height: 64px; /* طول إطار واحد */
+            /* رابط لصورة Sprite Sheet لشخصية شبحية */
+            background-image: url('https://raw.githubusercontent.com/uheartbeast/GDC-examples/master/Skeletons/GraveRobber/SpriteSheets/GraveRobber_walk.png');
+            background-repeat: no-repeat;
+            background-size: cover; /* لضبط الحجم */
+            
+            /* أنميشن الحركة الأساسية (Idle) */
+            animation: 
+                ghostFloat 3s ease-in-out infinite,  /* طفو عمودي */
+                spriteAnimation 0.8s steps(6) infinite; /* تحريك الإطارات */
+        }
+
+        /* أنميشن 1: تحريك إطارات الصورة (Steps) */
+        @keyframes spriteAnimation {
+            from { background-position: 0px 0px; }
+            to { background-position: -384px 0px; } /* 6 إطارات * 64px = 384px */
+        }
+
+        /* أنميشن 2: طفو ناعم في الهواء (Floating) */
+        @keyframes ghostFloat {
+            0%, 100% { transform: translateY(0); opacity: 0.8; }
+            50% { transform: translateY(-15px); opacity: 1; }
+        }
+
+        /* حالات الشخصية الخاصة */
+        .character-sprite.run { animation-duration: 0.5s, 0.4s; } /* حركة أسرع */
+        .character-sprite.fallen { transform: rotate(90deg) translateY(20px); animation: none; opacity: 0.5; }
+
+        /* ==================== بقية العناصر (محسنة) ==================== */
+        #narrativeBox { position: absolute; bottom: 0; width: 100%; text-align: center; color: var(--ghost-white); background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 20px; box-sizing: border-box; }
+        #narrativeText { font-size: 18px; line-height: 1.6; text-shadow: 0 2px 4px #000; }
+        #choiceArea { display: flex; gap: 10px; justify-content: center; padding-top: 15px; }
+        .choice-btn { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 10px 20px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .choice-btn:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 15px var(--neon-cyan); }
+    </style>
+</head>
+<body>
+
+<div id="game">
+    <div id="characterArea">
+        <div class="character-sprite" id="character"></div>
+    </div>
+
+    <div id="narrativeBox">
+        <div id="narrativeText">المطرُ يهطل.. أرى ظلَّين يمشيان بعيداً.. أمي.. أبي..</div>
+        <div id="choiceArea">
+            <button class="choice-btn" onclick="runAfter()">🏃 اجرِ خلفهم</button>
+            <button class="choice-btn" onclick="cryOut()">📣 ناديهم</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // جافا سكريبت بسيطة للتحكم في أنميشن الشخصية
+    const charEl = document.getElementById('character');
+    const textEl = document.getElementById('narrativeText');
+
+    function runAfter() {
+        charEl.classList.add('run'); // تفعيل أنميشن الركض الأسرع
+        textEl.innerText = "تجري.. الأرضُ طينٌ ثقيل. أقدامك تغوص..";
+        setTimeout(() => {
+            charEl.classList.remove('run');
+            charEl.classList.add('fallen'); // تفعيل أنميشن السقوط
+            textEl.innerText = "تعثرتَ.. الأرضُ باردة. كل شيء يضجّ برأسك.";
+        }, 2000);
+    }
+
+    function cryOut() {
+        textEl.innerText = "ناديتَ.. لكن صوتك ضاع في الرعد. لم يلتفتا.";
+    }
+</script>
+
+</body>
+</html>
